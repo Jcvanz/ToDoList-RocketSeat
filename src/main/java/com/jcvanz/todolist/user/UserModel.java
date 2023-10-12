@@ -10,10 +10,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import lombok.Data;
 
 @Data
+// nome da tabela
 @Entity(name = "tb_users")
 
 public class UserModel {
+    // chave primaria
     @Id
+
+    // gera o id automaticamente
     @GeneratedValue(generator = "UUID")
     private UUID id;
     

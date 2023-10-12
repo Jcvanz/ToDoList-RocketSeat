@@ -1,6 +1,9 @@
 package com.jcvanz.todolist.user;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,11 @@ public class UserController {
             // Mensagem de erro e status code
             return ResponseEntity.status(400).body("Usuário já cadastrado");
         };
+
+        // Faz a criptografia da senha
+        var passwordHashred = BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray());
+        userModel.setPassword(passwordHashred);
+        
         // cadastrar usuário ao banco
         var userCreated = this.userRepository.save(userModel);
         return ResponseEntity.status(200).body(userCreated);
