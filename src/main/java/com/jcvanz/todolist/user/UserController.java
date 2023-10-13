@@ -39,6 +39,6 @@ public class UserController {
         
         // cadastrar usuário ao banco
         var userCreated = this.userRepository.save(userModel);
-        return ResponseEntity.status(200).body(userCreated);
+        return ResponseEntity.status(200).body(userCreated); 
     }
 }
