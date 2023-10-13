@@ -61,12 +61,24 @@ public class TaskController {
 
     // fazer updates nas tarefas criadas
     @PutMapping("/{id}")
-    public TaskModel update(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID id) {
+    public ResponseEntity update(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID id) {
         // busca no banco de dados o ID da task
         var task = this.taskRepository.findById(id).orElse(null);
+        
+        // faz a validação para saber se a terefa existe
+        if(task == null) {
+            return ResponseEntity.status(500).body("Tarefa não encontrada");
+        }
+
+        // faz a validação se o usuário é o dono da task
+        var idUser = request.getAttribute("idUser");
+        if(!task.getIdUser().equals(idUser)) {
+            return ResponseEntity.status(500).body("Usuário não tem permissão para alterar essa tarefa");
+        }
 
         Utils.copyNonNullProperties(taskModel, task);
-
-        return this.taskRepository.save(task);
+        
+        var taskUpdated = this.taskRepository.save(task);
+        return ResponseEntity.ok().body(taskUpdated);
     }
 }
